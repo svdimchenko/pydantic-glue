@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Union
 
 import jsonref
 
@@ -61,7 +61,7 @@ def handle_root(o: dict[str, Any]) -> list[tuple[str, str]]:
     return map_dispatch(o)
 
 
-def convert(schema: dict[str, Any]) -> list[Any] | list[tuple[str, str]]:
+def convert(schema: dict[str, Any]) -> Union[list[Any], list[tuple[str, str]]]:
     if not schema:
         return []
 
