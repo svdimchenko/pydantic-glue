@@ -1,0 +1,62 @@
+[tool.poetry]
+name = "pydantic-glue"
+version = "0.1.0"
+description = "Convert pydantic model to aws glue schema for terraform"
+authors = ["Serhii Dimchenko <svdimchenko@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.scripts]
+pydantic-glue = "pydantic_glue.cli:cli"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+jsonref = "^1.1.0"
+pydantic = "^2.7.1"
+
+[tool.poetry.group.dev.dependencies]
+autoflake = "^2.3.1"
+pytest = "^8.2.0"
+mypy = "^1.10.0"
+flake8 = "^7.0.0"
+black = "^24.4.2"
+isort = "^5.13.2"
+pre-commit = "^3.7.0"
+
+[tool.autoflake]
+recursive = true
+in-place = true
+remove-all-unused-imports = true
+remove-unused-variables = true
+
+[tool.black]
+line-length = 120
+target-version = ['py39', 'py310', 'py311', 'py312']
+include = '\.pyi?$'
+
+[tool.flake8]
+files = '.*\.py'
+max-line-length = 120
+exclude = ['.git', '.eggs', '__pycache__', 'venv', '.venv']
+ignore = [
+    # space before: (needed for how black formats slicing)
+    'E203',
+    # line break before binary operator (needed for how black formats long lines)
+    'W503'
+]
+
+[tool.isort]
+profile = 'black'
+src_paths = ['athena_udf', 'test']
+
+[tool.pytest.ini_options]
+testpaths = [
+    "tests"
+]
+
+[tool.mypy]
+ignore_missing_imports = true
+strict = true
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
