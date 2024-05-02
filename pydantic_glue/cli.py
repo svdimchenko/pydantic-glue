@@ -18,7 +18,7 @@ def cli() -> None:
 
     imported = __import__(os.path.basename(module_file))
     imported = getattr(imported, class_name)
-    schema = imported.model_json_schema()
+    schema = json.dumps(imported.model_json_schema())
     schema = convert(schema)
     schema = {k: v for (k, v) in schema}
     schema = {
