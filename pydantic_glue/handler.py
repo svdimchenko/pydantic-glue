@@ -39,8 +39,11 @@ def handle_map(o: dict[str, Any]) -> str:
 
 
 def handle_union(o: dict[str, Any]) -> str:
-    res = [dispatch(v) for v in o["anyOf"]]
-    return f"union<{','.join(res)}>"
+    types = [i for i in o["anyOf"] if i["type"] != "null"]
+    if len(types) > 1:
+        res = [dispatch(v) for v in types]
+        return f"union<{','.join(res)}>"
+    return dispatch(types[0])
 
 
 def map_dispatch(o: dict[str, Any]) -> list[tuple[str, str]]:
@@ -61,9 +64,7 @@ def handle_root(o: dict[str, Any]) -> list[tuple[str, str]]:
     return map_dispatch(o)
 
 
-def convert(schema: dict[str, Any]) -> Union[list[Any], list[tuple[str, str]]]:
+def convert(schema: str) -> Union[list[Any], list[tuple[str, str]]]:
     if not schema:
         return []
-
-    schema = jsonref.loads(schema)
-    return handle_root(schema)
+    return handle_root(jsonref.loads(schema))

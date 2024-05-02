@@ -1,5 +1,5 @@
 import json
-from typing import Union
+from typing import Optional, Union
 
 from pydantic import BaseModel
 from pydantic_glue import convert
@@ -163,3 +163,12 @@ def test_union_of_complex_types():
 
     expected = [("stuff", "union<struct<hey:string,ho:string>,struct<lets:int,go:int>>")]
     assert convert(json.dumps(A.model_json_schema())) == expected
+
+
+def test_single_optional_column():
+    class A(BaseModel):
+        name: Optional[str] = None
+
+    expected = [("name", "string")]
+    actual = json.dumps(A.model_json_schema())
+    assert convert(actual) == expected
