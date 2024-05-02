@@ -67,6 +67,4 @@ def handle_root(o: dict[str, Any]) -> list[tuple[str, str]]:
 def convert(schema: str) -> Union[list[Any], list[tuple[str, str]]]:
     if not schema:
         return []
-
-    schema = jsonref.loads(schema)
-    return handle_root(schema)
+    return handle_root(jsonref.loads(schema))
