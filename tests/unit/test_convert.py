@@ -1,3 +1,4 @@
+import datetime
 import json
 from typing import Optional, Union
 
@@ -30,6 +31,22 @@ def test_single_boolean_column():
         name: bool
 
     expected = [("name", "boolean")]
+    assert convert(json.dumps(A.model_json_schema())) == expected
+
+
+def test_single_date_column():
+    class A(BaseModel):
+        modifiedOn: datetime.date
+
+    expected = [("modifiedOn", "date")]
+    assert convert(json.dumps(A.model_json_schema())) == expected
+
+
+def test_single_datetime_column():
+    class A(BaseModel):
+        modifiedOn: datetime.datetime
+
+    expected = [("modifiedOn", "timestamp")]
     assert convert(json.dumps(A.model_json_schema())) == expected
 
 

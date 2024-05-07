@@ -18,6 +18,10 @@ def dispatch(v: dict[str, Any]) -> str:
         return handle_array(v)
 
     if t == "string":
+        if v.get("format") == "date-time":
+            return "timestamp"
+        if v.get("format") == "date":
+            return "date"
         return "string"
 
     if t == "boolean":
