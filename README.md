@@ -34,27 +34,30 @@ and generate a JSON with column types that can be used with `terraform` to creat
 
 Take the following pydantic class
 
-```python
+```python title="example.py"
 from pydantic import BaseModel
 from typing import List
+
 
 class Bar(BaseModel):
     name: str
     age: int
 
+
 class Foo(BaseModel):
     nums: List[int]
     bars: List[Bar]
     other: str
+
 ```
 
 Running `pydantic-glue`
 
 ```bash
-pydantic-glue example.py Foo
+pydantic-glue -f example.py -c Foo
 ```
 
-you get this JSON
+you get this JSON in the terminal:
 
 ```json
 {
@@ -89,6 +92,12 @@ resource "aws_glue_catalog_table" "table" {
     }
   }
 }
+```
+
+Alternatively you can run CLI with `-o` flag to set output file location:
+
+```bash
+pydantic-glue -f example.py -c Foo -o example.json -l
 ```
 
 ## How it works?
