@@ -39,7 +39,7 @@ def dispatch(v: dict[str, Any]) -> str:
 def handle_map(o: dict[str, Any]) -> str:
     t = o["additionalProperties"]
     res = dispatch(t)
-    return f"map<{res}, {res}>"
+    return f"map<string,{res}>"
 
 
 def handle_union(o: dict[str, Any]) -> str:

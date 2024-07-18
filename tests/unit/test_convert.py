@@ -189,3 +189,25 @@ def test_single_optional_column():
     expected = [("name", "string")]
     actual = json.dumps(A.model_json_schema())
     assert convert(actual) == expected
+
+
+def test_map_object():
+
+    class A(BaseModel):
+        some_a: dict[str, int]
+
+    expected = [("some_a", "map<string,int>")]
+    assert convert(json.dumps(A.model_json_schema())) == expected
+
+
+def test_nested_map_object():
+
+    class A(BaseModel):
+        hey: str
+        ho: str
+
+    class B(BaseModel):
+        some_b: dict[str, dict[str, A]]
+
+    expected = [("some_b", "map<string,map<string,struct<hey:string,ho:string>>>")]
+    assert convert(json.dumps(B.model_json_schema())) == expected
