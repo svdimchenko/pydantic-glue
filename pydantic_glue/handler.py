@@ -10,8 +10,6 @@ def dispatch(v: dict[str, Any]) -> str:
     t = v["type"]
 
     if t == "object":
-        if "additionalProperties" in v:
-            return handle_map(v)
         return handle_object(v)
 
     if t == "array":
@@ -32,9 +30,6 @@ def dispatch(v: dict[str, Any]) -> str:
 
     if t == "number":
         return "float"
-
-    if t == "null":
-        return "null"
 
     raise Exception(f"unknown type: {t}")
 
@@ -58,11 +53,17 @@ def map_dispatch(o: dict[str, Any]) -> list[tuple[str, str]]:
 
 
 def handle_object(o: dict[str, Any]) -> str:
+    if "additionalProperties" in o:
+        if o["additionalProperties"] is True:
+            raise Exception("Glue Cannot Support a Map Without Types")
+        elif o["additionalProperties"]:
+            if "properties" in o:
+                raise NotImplementedError("Merging types of properties and additionalProperties")
+            return handle_map(o)
+
     if "properties" not in o:
-        raise Exception(
-            "AWS Glue does not support structs without properties,"
-            " perhaps you mean to serialize the field as a string?"
-        )
+        raise Exception("Object without properties or additionalProperties can't be represented")
+
     res = [f"{k}:{v}" for (k, v) in map_dispatch(o)]
     return f"struct<{','.join(res)}>"
 

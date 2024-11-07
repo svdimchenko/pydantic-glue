@@ -2,8 +2,10 @@ import datetime
 import json
 from typing import Optional, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_serializer
 from pydantic_glue import convert
+
+import pytest
 
 
 def test_empty():
@@ -148,16 +150,29 @@ def test_list_of_objects():
         nums: list[int]
         boos: list[B]
         other: str
-        empty: None
+        as_string: dict
+
+        @field_serializer("as_string")
+        def dump_json(self, value: dict) -> str:
+            return json.dumps(value)
 
     expected = [
         ("nums", "array<int>"),
         ("boos", "array<struct<foo:string,x:int>>"),
         ("other", "string"),
-        ("empty", "null"),
+        ("as_string", "string"),
     ]
 
-    assert convert(json.dumps(A.model_json_schema())) == expected
+    assert convert(
+        json.dumps(A.model_json_schema(mode="serialization")),
+    ) == expected
+
+def test_invalid_object_raises():
+    class A(BaseModel):
+        map_serialized_as_object: dict
+
+    with pytest.raises(Exception):
+        convert(json.dumps(A.model_json_schema()))
 
 
 def test_union_of_string_and_int():
