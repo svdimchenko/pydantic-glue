@@ -33,6 +33,9 @@ def dispatch(v: dict[str, Any]) -> str:
     if t == "number":
         return "float"
 
+    if t == "null":
+        return "null"
+
     raise Exception(f"unknown type: {t}")
 
 
@@ -55,6 +58,11 @@ def map_dispatch(o: dict[str, Any]) -> list[tuple[str, str]]:
 
 
 def handle_object(o: dict[str, Any]) -> str:
+    if "properties" not in o:
+        raise Exception(
+            "AWS Glue does not support structs without properties,"
+            " perhaps you mean to serialize the field as a string?"
+        )
     res = [f"{k}:{v}" for (k, v) in map_dispatch(o)]
     return f"struct<{','.join(res)}>"
 

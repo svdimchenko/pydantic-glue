@@ -148,11 +148,13 @@ def test_list_of_objects():
         nums: list[int]
         boos: list[B]
         other: str
+        empty: None
 
     expected = [
         ("nums", "array<int>"),
         ("boos", "array<struct<foo:string,x:int>>"),
         ("other", "string"),
+        ("empty", "null"),
     ]
 
     assert convert(json.dumps(A.model_json_schema())) == expected
