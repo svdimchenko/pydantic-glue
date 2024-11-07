@@ -2,10 +2,9 @@ import datetime
 import json
 from typing import Optional, Union
 
+import pytest
 from pydantic import BaseModel, field_serializer
 from pydantic_glue import convert
-
-import pytest
 
 
 def test_empty():
@@ -163,9 +162,13 @@ def test_list_of_objects():
         ("as_string", "string"),
     ]
 
-    assert convert(
-        json.dumps(A.model_json_schema(mode="serialization")),
-    ) == expected
+    assert (
+        convert(
+            json.dumps(A.model_json_schema(mode="serialization")),
+        )
+        == expected
+    )
+
 
 def test_invalid_object_raises():
     class A(BaseModel):
