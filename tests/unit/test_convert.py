@@ -35,6 +35,31 @@ def test_single_boolean_column():
     assert convert(json.dumps(A.model_json_schema())) == expected
 
 
+def test_single_dict_as_string_column():
+    class A(BaseModel):
+        as_string: dict
+
+        @field_serializer("as_string")
+        def dump_json(self, value: dict) -> str:
+            return json.dumps(value)
+
+    expected = [("as_string", "string")]
+    assert convert(json.dumps(A.model_json_schema(mode="serialization"))) == expected
+
+
+def test_single_type_override_column():
+    class A(BaseModel):
+        special: int = Field(
+            ...,
+            json_schema_extra={
+                "glue_type": "gluetype",
+            },
+        )
+
+    expected = [("special", "gluetype")]
+    assert convert(json.dumps(A.model_json_schema())) == expected
+
+
 def test_single_date_column():
     class A(BaseModel):
         modifiedOn: datetime.date
@@ -149,35 +174,22 @@ def test_list_of_objects():
         nums: list[int]
         boos: list[B]
         other: str
-        as_string: dict
-        unixtime: int = Field(
-            ...,
-            json_schema_extra={
-                "glue_type": "timestamp",
-            },
-        )
-
-        @field_serializer("as_string")
-        def dump_json(self, value: dict) -> str:
-            return json.dumps(value)
 
     expected = [
         ("nums", "array<int>"),
         ("boos", "array<struct<foo:string,x:int>>"),
         ("other", "string"),
-        ("as_string", "string"),
-        ("unixtime", "timestamp"),
     ]
 
     assert (
         convert(
-            json.dumps(A.model_json_schema(mode="serialization")),
+            json.dumps(A.model_json_schema()),
         )
         == expected
     )
 
 
-def test_unix_time():
+def test_custom_type():
     class A(BaseModel):
         unixtime: int = Field(
             ...,
@@ -191,7 +203,7 @@ def test_unix_time():
                 "glue_type": "timestamp",
             },
         )
-        override_union_unixtime: Optional[int | str] = Field(
+        clobber_union_unixtime: Optional[int | str] = Field(
             ...,
             json_schema_extra={
                 "glue_type": "timestamp",
@@ -207,7 +219,7 @@ def test_unix_time():
     expected = [
         ("unixtime", "timestamp"),
         ("optional_unixtime", "timestamp"),
-        ("override_union_unixtime", "timestamp"),
+        ("clobber_union_unixtime", "timestamp"),
         ("correct_union_unixtime", "union<timestamp,string>"),
     ]
 
