@@ -4,6 +4,12 @@ import jsonref
 
 
 def dispatch(v: dict[str, Any]) -> str:
+
+    glue_type = v.get("glue_type")
+
+    if glue_type:
+        return glue_type
+
     if "anyOf" in v:
         return handle_union(v)
 

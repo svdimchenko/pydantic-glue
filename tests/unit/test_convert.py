@@ -3,7 +3,7 @@ import json
 from typing import Optional, Union
 
 import pytest
-from pydantic import BaseModel, field_serializer
+from pydantic import BaseModel, Field, field_serializer
 from pydantic_glue import convert
 
 
@@ -150,6 +150,12 @@ def test_list_of_objects():
         boos: list[B]
         other: str
         as_string: dict
+        unixtime: int = Field(
+            ...,
+            json_schema_extra={
+                "glue_type": "timestamp",
+            },
+        )
 
         @field_serializer("as_string")
         def dump_json(self, value: dict) -> str:
@@ -160,6 +166,49 @@ def test_list_of_objects():
         ("boos", "array<struct<foo:string,x:int>>"),
         ("other", "string"),
         ("as_string", "string"),
+        ("unixtime", "timestamp"),
+    ]
+
+    assert (
+        convert(
+            json.dumps(A.model_json_schema(mode="serialization")),
+        )
+        == expected
+    )
+
+
+def test_unix_time():
+    class A(BaseModel):
+        unixtime: int = Field(
+            ...,
+            json_schema_extra={
+                "glue_type": "timestamp",
+            },
+        )
+        optional_unixtime: Optional[int] = Field(
+            ...,
+            json_schema_extra={
+                "glue_type": "timestamp",
+            },
+        )
+        override_union_unixtime: Optional[int | str] = Field(
+            ...,
+            json_schema_extra={
+                "glue_type": "timestamp",
+            },
+        )
+        correct_union_unixtime: Optional[int | str] = Field(
+            ...,
+            json_schema_extra={
+                "glue_type": "union<timestamp,string>",
+            },
+        )
+
+    expected = [
+        ("unixtime", "timestamp"),
+        ("optional_unixtime", "timestamp"),
+        ("override_union_unixtime", "timestamp"),
+        ("correct_union_unixtime", "union<timestamp,string>"),
     ]
 
     assert (
