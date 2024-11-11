@@ -203,13 +203,13 @@ def test_custom_type():
                 "glue_type": "timestamp",
             },
         )
-        clobber_union_unixtime: Optional[int | str] = Field(
+        clobber_union_unixtime: Optional[Union[int, str]] = Field(
             ...,
             json_schema_extra={
                 "glue_type": "timestamp",
             },
         )
-        correct_union_unixtime: Optional[int | str] = Field(
+        correct_union_unixtime: Optional[Union[int, str]] = Field(
             ...,
             json_schema_extra={
                 "glue_type": "union<timestamp,string>",

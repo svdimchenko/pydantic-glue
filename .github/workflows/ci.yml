@@ -3,7 +3,7 @@ name: ci
 on:
   pull_request:
   push:
-    branches: [main]
+    branches: [main, support-null-objects]
 
 jobs:
   pre-commit:
