@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "pydantic-glue"
 keywords = ["pydantic", "glue", "athena", "types", "convert"]
-version = "0.5.0"
+version = "0.6.0"
 description = "Convert pydantic model to aws glue schema for terraform"
 authors = ["Serhii Dimchenko <svdimchenko@gmail.com>"]
 readme = "README.md"
