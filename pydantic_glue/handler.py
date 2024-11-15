@@ -4,14 +4,18 @@ import jsonref
 
 
 def dispatch(v: dict[str, Any]) -> str:
+
+    glue_type = v.get("glue_type", None)
+
+    if glue_type is not None:
+        return str(glue_type)
+
     if "anyOf" in v:
         return handle_union(v)
 
     t = v["type"]
 
     if t == "object":
-        if "additionalProperties" in v:
-            return handle_map(v)
         return handle_object(v)
 
     if t == "array":
@@ -55,6 +59,17 @@ def map_dispatch(o: dict[str, Any]) -> list[tuple[str, str]]:
 
 
 def handle_object(o: dict[str, Any]) -> str:
+    if "additionalProperties" in o:
+        if o["additionalProperties"] is True:
+            raise Exception("Glue Cannot Support a Map Without Types")
+        elif o["additionalProperties"]:
+            if "properties" in o:
+                raise NotImplementedError("Merging types of properties and additionalProperties")
+            return handle_map(o)
+
+    if "properties" not in o:
+        raise Exception("Object without properties or additionalProperties can't be represented")
+
     res = [f"{k}:{v}" for (k, v) in map_dispatch(o)]
     return f"struct<{','.join(res)}>"
 

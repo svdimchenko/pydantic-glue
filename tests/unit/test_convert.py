@@ -2,7 +2,8 @@ import datetime
 import json
 from typing import Optional, Union
 
-from pydantic import BaseModel
+import pytest
+from pydantic import BaseModel, Field, field_serializer
 from pydantic_glue import convert
 
 
@@ -31,6 +32,31 @@ def test_single_boolean_column():
         name: bool
 
     expected = [("name", "boolean")]
+    assert convert(json.dumps(A.model_json_schema())) == expected
+
+
+def test_single_dict_as_string_column():
+    class A(BaseModel):
+        as_string: dict
+
+        @field_serializer("as_string")
+        def dump_json(self, value: dict) -> str:
+            return json.dumps(value)
+
+    expected = [("as_string", "string")]
+    assert convert(json.dumps(A.model_json_schema(mode="serialization"))) == expected
+
+
+def test_single_type_override_column():
+    class A(BaseModel):
+        special: int = Field(
+            ...,
+            json_schema_extra={
+                "glue_type": "gluetype",
+            },
+        )
+
+    expected = [("special", "gluetype")]
     assert convert(json.dumps(A.model_json_schema())) == expected
 
 
@@ -155,7 +181,62 @@ def test_list_of_objects():
         ("other", "string"),
     ]
 
-    assert convert(json.dumps(A.model_json_schema())) == expected
+    assert (
+        convert(
+            json.dumps(A.model_json_schema()),
+        )
+        == expected
+    )
+
+
+def test_custom_type():
+    class A(BaseModel):
+        unixtime: int = Field(
+            ...,
+            json_schema_extra={
+                "glue_type": "timestamp",
+            },
+        )
+        optional_unixtime: Optional[int] = Field(
+            ...,
+            json_schema_extra={
+                "glue_type": "timestamp",
+            },
+        )
+        clobber_union_unixtime: Optional[Union[int, str]] = Field(
+            ...,
+            json_schema_extra={
+                "glue_type": "timestamp",
+            },
+        )
+        correct_union_unixtime: Optional[Union[int, str]] = Field(
+            ...,
+            json_schema_extra={
+                "glue_type": "union<timestamp,string>",
+            },
+        )
+
+    expected = [
+        ("unixtime", "timestamp"),
+        ("optional_unixtime", "timestamp"),
+        ("clobber_union_unixtime", "timestamp"),
+        ("correct_union_unixtime", "union<timestamp,string>"),
+    ]
+
+    assert (
+        convert(
+            json.dumps(A.model_json_schema(mode="serialization")),
+        )
+        == expected
+    )
+
+
+def test_invalid_object_raises():
+    class A(BaseModel):
+        map_serialized_as_object: dict
+
+    with pytest.raises(Exception):
+        convert(json.dumps(A.model_json_schema()))
 
 
 def test_union_of_string_and_int():
