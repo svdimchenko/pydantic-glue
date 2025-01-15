@@ -1,3 +1,4 @@
+from dataclasses import dataclass
 import json
 import logging
 import os
@@ -12,7 +13,16 @@ logging.basicConfig(format="{asctime} - {levelname} - {message}", level=logging.
 log = logging.getLogger(__name__)
 
 
-def cli() -> None:
+@dataclass
+class Arguments:
+    module_file: str
+    class_name: str
+    output_file: str
+    log_result: bool
+    json_schema_by_alias: bool
+
+
+def parse_args(args: list[str]) -> Arguments:
     parser = ArgumentParser()
     parser.add_argument("-f", dest="source_file", required=True, type=str, help="Path to the python file")
     parser.add_argument("-c", dest="class_name", required=True, type=str, help="Python class name")
@@ -20,15 +30,34 @@ def cli() -> None:
     parser.add_argument(
         "-l", dest="log_result", action="store_true", default=False, help="Flag if need to print result in log"
     )
-    args = parser.parse_args(sys.argv[1:])
+    parser.add_argument(
+        "--schema-by-name",
+        dest="json_schema_by_alias",
+        action="store_false",
+        default=True,
+        help="Flag to not use name for json schema generation",
+    )
+    args = parser.parse_args(args)
 
-    module_file = args.source_file.removesuffix(".py")
+    return Arguments(
+        module_file=args.source_file.removesuffix(".py"),
+        class_name=args.class_name,
+        output_file=args.output_file,
+        log_result=args.log_result,
+        json_schema_by_alias=args.json_schema_by_alias,
+    )
 
-    sys.path.append(os.path.dirname(module_file))
 
-    imported = __import__(os.path.basename(module_file))
+def cli() -> None:
+
+    args = parse_args(sys.argv[1:])
+
+    sys.path.append(os.path.dirname(args.module_file))
+
+    imported = __import__(os.path.basename(args.module_file))
     imported = getattr(imported, args.class_name)
-    input_schema = json.dumps(imported.model_json_schema())
+
+    input_schema = json.dumps(imported.model_json_schema(by_alias=args.json_schema_by_alias))
     converted = convert(input_schema)
     output = json.dumps(
         {

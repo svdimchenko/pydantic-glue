@@ -100,6 +100,8 @@ Alternatively you can run CLI with `-o` flag to set output file location:
 pydantic-glue -f example.py -c Foo -o example.json -l
 ```
 
+If your Pydantic models use field aliases but you prefer to display the field names in the JSON schema, you can enable this behavior by using the `--schema-by-name` flag.
+
 ## Override the type for the AWS Glue Schema
 
 Wherever there is a `type` key in the input JSON Schema, an additional key `glue_type` may be
