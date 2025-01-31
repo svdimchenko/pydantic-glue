@@ -12,3 +12,6 @@ __pycache__/
 
 # Poetry
 poetry.lock
+
+# Temporary
+tests/tmp

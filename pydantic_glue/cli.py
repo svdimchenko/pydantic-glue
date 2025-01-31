@@ -1,9 +1,9 @@
-from dataclasses import dataclass
 import json
 import logging
 import os
 import sys
 from argparse import ArgumentParser
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -22,7 +22,7 @@ class Arguments:
     json_schema_by_alias: bool
 
 
-def parse_args(args: list[str]) -> Arguments:
+def parse_args(argv: list[str]) -> Arguments:
     parser = ArgumentParser()
     parser.add_argument("-f", dest="source_file", required=True, type=str, help="Path to the python file")
     parser.add_argument("-c", dest="class_name", required=True, type=str, help="Python class name")
@@ -37,7 +37,7 @@ def parse_args(args: list[str]) -> Arguments:
         default=True,
         help="Flag to not use name for json schema generation",
     )
-    args = parser.parse_args(args)
+    args = parser.parse_args(argv)
 
     return Arguments(
         module_file=args.source_file.removesuffix(".py"),
