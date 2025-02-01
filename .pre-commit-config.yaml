@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
       # Identify invalid files
       - id: check-ast
@@ -27,42 +27,15 @@ repos:
         args: [--markdown-linebreak-ext=md]
       - id: end-of-file-fixer
 
-  - repo: https://github.com/PyCQA/autoflake
-    rev: v2.3.1
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.4
     hooks:
-      - id: autoflake
-
-  - repo: https://github.com/asottile/pyupgrade
-    rev: v3.15.2
-    hooks:
-      - id: pyupgrade
-        args:
-          - '--py39-plus'
-
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-        name: isort
-        args:
-          - '.'
-
-  - repo: https://github.com/psf/black
-    rev: 24.4.2
-    hooks:
-      - id: black
-
-  - repo: https://github.com/pycqa/flake8
-    rev: 7.0.0
-    hooks:
-      - id: flake8
-        additional_dependencies:
-          - 'Flake8-pyproject~=1.1'
-        args:
-          - '.'
+      - id: ruff
+        args: [ --fix ]
+      - id: ruff-format
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.3.0
+    rev: v1.14.1
     hooks:
       - id: mypy
         args:
@@ -74,7 +47,7 @@ repos:
         exclude: ^tests/
 
   - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.40.0
+    rev: v0.44.0
     hooks:
     - id: markdownlint
       args:
