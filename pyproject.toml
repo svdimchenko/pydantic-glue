@@ -26,6 +26,7 @@ cli-test-helpers = "^4.1.0"
 mypy = "^1.10.0"
 pre-commit = "^3.7.0"
 ruff = "^0.9.4"
+pytest-cov = "^6.0.0"
 
 [tool.ruff]
 line-length = 120
@@ -83,9 +84,8 @@ docstring-code-format = false
 docstring-code-line-length = "dynamic"
 
 [tool.pytest.ini_options]
-testpaths = [
-    "tests"
-]
+testpaths = ["tests"]
+addopts = "--cov"
 
 [tool.mypy]
 ignore_missing_imports = true
