@@ -1,5 +1,17 @@
 # JSON Schema to AWS Glue schema converter
 
+<!-- markdownlint-disable MD013 -->
+
+[![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
+[![Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json)](https://github.com/astral-sh/ruff)
+[![Checked with mypy](http://www.mypy-lang.org/static/mypy_badge.svg)](http://mypy-lang.org/)
+[![image](https://img.shields.io/pypi/v/pydantic-glue.svg)](https://pypi.python.org/pypi/pydantic-glue)
+[![image](https://img.shields.io/pypi/l/pydantic-glue.svg)](https://github.com/svdimchenko/pydantic-glue/blob/main/LICENSE)
+[![image](https://img.shields.io/pypi/pyversions/pydantic-glue.svg)](https://pypi.python.org/pypi/pydantic-glue)
+[![Actions status](https://github.com/svdimchenko/pydantic-glue/actions/workflows/ci.yml/badge.svg)](https://github.com/svdimchenko/pydantic-glue/actions)
+
+<!-- markdownlint-restore -->
+
 <!-- TOC -->
 * [JSON Schema to AWS Glue schema converter](#json-schema-to-aws-glue-schema-converter)
   * [Installation](#installation)
