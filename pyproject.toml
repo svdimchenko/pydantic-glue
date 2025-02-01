@@ -21,40 +21,66 @@ jsonref = "^1.1.0"
 pydantic = "^2.7.1"
 
 [tool.poetry.group.dev.dependencies]
-autoflake = "^2.3.1"
 pytest = "^8.2.0"
-mypy = "^1.10.0"
-flake8 = "^7.0.0"
-black = "^24.4.2"
-isort = "^5.13.2"
-pre-commit = "^3.7.0"
 cli-test-helpers = "^4.1.0"
+mypy = "^1.10.0"
+pre-commit = "^3.7.0"
+ruff = "^0.9.4"
 
-[tool.autoflake]
-recursive = true
-in-place = true
-remove-all-unused-imports = true
-remove-unused-variables = true
-
-[tool.black]
+[tool.ruff]
 line-length = 120
-target-version = ['py39', 'py310', 'py311', 'py312']
-include = '\.pyi?$'
+indent-width = 4
+target-version = "py39"
 
-[tool.flake8]
-files = '.*\.py'
-max-line-length = 120
-exclude = ['.git', '.eggs', '__pycache__', 'venv', '.venv']
+[tool.ruff.lint]
+select = ["ALL"]
 ignore = [
-    # space before: (needed for how black formats slicing)
-    'E203',
-    # line break before binary operator (needed for how black formats long lines)
-    'W503'
+	# The following rules may cause conflicts when used with the formatter
+	"COM812",
+	"ISC001",
+
+	# General ignores
+	"ANN204", # Missing return type annotation for special method `__init__`
+	"D107",   # Missing docstring in `__init__`
+	"D203",   # one-blank-line-before-class
+	"D213",   # multi-line-summary-second-line
+	"G004",   # Logging statement uses f-string
+	"UP007",  # Use `X | Y` for type annotations
 ]
 
-[tool.isort]
-profile = 'black'
-src_paths = ['athena_udf', 'test']
+fixable = ["ALL"]
+unfixable = []
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.lint.per-file-ignores]
+"**/{tests}/*" = [
+	"ANN001",  # Missing type annotation for function argument
+	"ANN201",  # Missing return type annotation for public function
+	"D100",    # Missing docstring in public module
+	"D101",    # Missing docstring in public class
+	"D103",    # Missing docstring in public function
+	"S101",    # Use of `assert` detected
+	"S603",    # `subprocess` call: check for execution of untrusted input
+]
+"__init__.py" = ["D104"]  # Missing docstring in public package
+
+"pydantic_glue/errors.py" = [
+	"D101",    # Missing docstring in public class
+]
+
+[tool.ruff.lint.flake8-type-checking]
+runtime-evaluated-base-classes = ["pydantic.BaseModel"]
+
+[tool.ruff.lint.mccabe]
+max-complexity = 15
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+docstring-code-format = false
+docstring-code-line-length = "dynamic"
 
 [tool.pytest.ini_options]
 testpaths = [

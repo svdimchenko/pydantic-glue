@@ -1,10 +1,14 @@
+from __future__ import annotations
+
 import datetime
 import json
 from typing import Optional, Union
 
 import pytest
 from pydantic import BaseModel, Field, field_serializer
+
 from pydantic_glue import convert
+from pydantic_glue.errors import ObjectWithoutPropertiesError
 
 
 def test_empty():
@@ -62,17 +66,17 @@ def test_single_type_override_column():
 
 def test_single_date_column():
     class A(BaseModel):
-        modifiedOn: datetime.date
+        modified_on: datetime.date
 
-    expected = [("modifiedOn", "date")]
+    expected = [("modified_on", "date")]
     assert convert(json.dumps(A.model_json_schema())) == expected
 
 
 def test_single_datetime_column():
     class A(BaseModel):
-        modifiedOn: datetime.datetime
+        modified_on: datetime.datetime
 
-    expected = [("modifiedOn", "timestamp")]
+    expected = [("modified_on", "timestamp")]
     assert convert(json.dumps(A.model_json_schema())) == expected
 
 
@@ -235,7 +239,7 @@ def test_invalid_object_raises():
     class A(BaseModel):
         map_serialized_as_object: dict
 
-    with pytest.raises(Exception):
+    with pytest.raises(ObjectWithoutPropertiesError):
         convert(json.dumps(A.model_json_schema()))
 
 
@@ -273,7 +277,6 @@ def test_single_optional_column():
 
 
 def test_map_object():
-
     class A(BaseModel):
         some_a: dict[str, int]
 
@@ -282,7 +285,6 @@ def test_map_object():
 
 
 def test_nested_map_object():
-
     class A(BaseModel):
         hey: str
         ho: str
