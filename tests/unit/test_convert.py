@@ -27,7 +27,7 @@ def test_single_float_column():
     class A(BaseModel):
         name: float
 
-    expected = [("name", "float")]
+    expected = [("name", "double")]
     assert convert(json.dumps(A.model_json_schema())) == expected
 
 

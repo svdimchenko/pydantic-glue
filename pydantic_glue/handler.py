@@ -39,7 +39,7 @@ def dispatch(v: dict[str, Any]) -> str:  # noqa: PLR0911
         return "int"
 
     if t == "number":
-        return "float"
+        return "double"
 
     raise UnknownTypeError(t)
 
@@ -51,7 +51,14 @@ def _handle_map(o: dict[str, Any]) -> str:
 
 
 def _handle_union(o: dict[str, Any]) -> str:
-    types = [i for i in o["anyOf"] if i["type"] != "null"]
+    if "precision" in o and "scale" in o:
+        return f"decimal({o['precision']},{o['scale']})"
+    types = [i for i in o["anyOf"] if i.get("type") != "null"]
+    for t in types:
+        if t.get("type") == "number" and "precision" in t and "scale" in t:
+            return f"decimal({t['precision']},{t['scale']})"
+        if "anyOf" in t and "precision" in t and "scale" in t:
+            return f"decimal({t['precision']},{t['scale']})"
     if len(types) > 1:
         res = [dispatch(v) for v in types]
         return f"union<{','.join(res)}>"
@@ -71,10 +78,8 @@ def _handle_object(o: dict[str, Any]) -> str:
                 msg = "Merging types of properties and additionalProperties"
                 raise NotImplementedError(msg)
             return _handle_map(o)
-
     if "properties" not in o:
         raise ObjectWithoutPropertiesError
-
     res = [f"{k}:{v}" for (k, v) in _map_dispatch(o)]
     return f"struct<{','.join(res)}>"
 
