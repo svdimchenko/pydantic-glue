@@ -12,7 +12,7 @@ from pydantic_glue import convert
 from pydantic_glue.errors import GlueMapWithoutTypesError
 
 
-def DecimalField(precision: int, scale: int):
+def decimal_field(precision: int, scale: int):
     return Annotated[Decimal, Field(json_schema_extra={"precision": precision, "scale": scale})]
 
 
@@ -38,7 +38,7 @@ def test_single_float_column():
 
 def test_decimal_type():
     class A(BaseModel):
-        price: DecimalField(10, 2)
+        price: decimal_field(10, 2)
 
     expected = [("price", "decimal(10,2)")]
     assert convert(json.dumps(A.model_json_schema())) == expected
