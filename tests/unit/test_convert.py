@@ -8,7 +8,7 @@ import pytest
 from pydantic import BaseModel, Field, field_serializer
 
 from pydantic_glue import convert
-from pydantic_glue.errors import ObjectWithoutPropertiesError, GlueMapWithoutTypesError
+from pydantic_glue.errors import GlueMapWithoutTypesError
 
 
 def test_empty():
