@@ -2,13 +2,18 @@ from __future__ import annotations
 
 import datetime
 import json
-from typing import Optional, Union
+from decimal import Decimal
+from typing import Annotated, Optional, Union
 
 import pytest
 from pydantic import BaseModel, Field, field_serializer
 
 from pydantic_glue import convert
 from pydantic_glue.errors import GlueMapWithoutTypesError
+
+
+def DecimalField(precision: int, scale: int):
+    return Annotated[Decimal, Field(json_schema_extra={"precision": precision, "scale": scale})]
 
 
 def test_empty():
@@ -28,6 +33,14 @@ def test_single_float_column():
         name: float
 
     expected = [("name", "double")]
+    assert convert(json.dumps(A.model_json_schema())) == expected
+
+
+def test_decimal_type():
+    class A(BaseModel):
+        price: DecimalField(10, 2)
+
+    expected = [("price", "decimal(10,2)")]
     assert convert(json.dumps(A.model_json_schema())) == expected
 
 
