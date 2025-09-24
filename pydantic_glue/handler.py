@@ -89,8 +89,10 @@ def _handle_object(o: dict[str, Any]) -> str:
                 msg = "Merging types of properties and additionalProperties"
                 raise NotImplementedError(msg)
             return _handle_map(o)
+
     if "properties" not in o:
         raise ObjectWithoutPropertiesError
+
     res = [f"{k}:{v}" for (k, v) in _map_dispatch(o)]
     return f"struct<{','.join(res)}>"
 
