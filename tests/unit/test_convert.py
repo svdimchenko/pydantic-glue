@@ -8,7 +8,7 @@ import pytest
 from pydantic import BaseModel, Field, field_serializer
 
 from pydantic_glue import convert
-from pydantic_glue.errors import ObjectWithoutPropertiesError
+from pydantic_glue.errors import ObjectWithoutPropertiesError, GlueMapWithoutTypesError
 
 
 def test_empty():
@@ -239,7 +239,7 @@ def test_invalid_object_raises():
     class A(BaseModel):
         map_serialized_as_object: dict
 
-    with pytest.raises(ObjectWithoutPropertiesError):
+    with pytest.raises(GlueMapWithoutTypesError):
         convert(json.dumps(A.model_json_schema()))
 
 
