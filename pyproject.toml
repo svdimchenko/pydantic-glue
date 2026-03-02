@@ -1,7 +1,7 @@
 [project]
 name = "pydantic-glue"
 keywords = ["pydantic", "glue", "athena", "types", "convert"]
-version = "0.7.0"
+version = "0.7.1"
 description = "Convert pydantic model to aws glue schema for terraform"
 readme = "README.md"
 license = "MIT"
