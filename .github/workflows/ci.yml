@@ -34,7 +34,18 @@ jobs:
     - name: Install UV and sync dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install uv
-        uv sync --group dev
+        pip install uv==0.10.7
+        # Try a few uv sync invocation styles for compatibility across uv versions
+        if uv sync dev; then
+          echo "synced with positional group"
+        elif uv sync --group dev; then
+          echo "synced with --group"
+        elif uv sync --groups dev; then
+          echo "synced with --groups"
+        else
+          echo "uv version:" && uv --version || true
+          uv sync --help || true
+          exit 2
+        fi
     - name: Run tests
       run: uv run pytest -q
