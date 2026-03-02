@@ -25,7 +25,7 @@ jobs:
       with:
         python-version: ${{ matrix.python-version }}
     - name: Set up UV
-      uses: astral-sh/setup-uv@v1
+      uses: astral-sh/setup-uv@v7
     - name: Cache pip
       uses: actions/cache@v5
       with:
@@ -35,17 +35,6 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install uv==0.10.7
-        # Try a few uv sync invocation styles for compatibility across uv versions
-        if uv sync dev; then
-          echo "synced with positional group"
-        elif uv sync --group dev; then
-          echo "synced with --group"
-        elif uv sync --groups dev; then
-          echo "synced with --groups"
-        else
-          echo "uv version:" && uv --version || true
-          uv sync --help || true
-          exit 2
-        fi
+        uv sync --group dev
     - name: Run tests
       run: uv run pytest -q
