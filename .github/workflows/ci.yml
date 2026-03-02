@@ -6,25 +6,22 @@ on:
     branches: [main]
 
 jobs:
-  pre-commit:
-    name: 'Pre-commit checks'
+  prek:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.9'
-      - uses: pre-commit/action@v3.0.1
+      - uses: actions/checkout@v6
+      - uses: j178/prek-action@v1
+
   test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+        python-version: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
     - name: Set up Python ${{ matrix.python-version }}
       id: setup-python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v6.2.0
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install and configure Poetry
@@ -34,7 +31,7 @@ jobs:
         virtualenvs-in-project: true
     - name: Load cached venv
       id: cached-poetry-dependencies
-      uses: actions/cache@v3
+      uses: actions/cache@v5.0.3
       with:
         path: .venv
         key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}

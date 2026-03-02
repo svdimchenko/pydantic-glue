@@ -16,7 +16,7 @@ repository = "https://github.com/svdimchenko/pydantic-glue"
 pydantic-glue = "pydantic_glue.cli:cli"
 
 [tool.poetry.dependencies]
-python = "^3.9"
+python = "^3.10"
 jsonref = "^1.1.0"
 pydantic = "^2.7.1"
 
@@ -24,7 +24,6 @@ pydantic = "^2.7.1"
 pytest = "^8.2.0"
 cli-test-helpers = "^4.1.0"
 mypy = "^1.10.0"
-pre-commit = ">=3.7,<5.0"
 ruff = ">=0.9.4,<0.16.0"
 pytest-cov = ">=6,<8"
 
