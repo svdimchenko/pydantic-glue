@@ -9,9 +9,11 @@
 __pycache__/
 .pytest_cache
 .coverage
+dist/
 
-# Poetry
+# Lock files
 poetry.lock
+uv.lock
 
 # Temporary
 tests/tmp

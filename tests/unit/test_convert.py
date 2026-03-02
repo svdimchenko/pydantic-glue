@@ -3,7 +3,7 @@ from __future__ import annotations
 import datetime
 import json
 from decimal import Decimal
-from typing import Annotated, Optional, Union
+from typing import Annotated, Union
 
 import pytest
 from pydantic import BaseModel, Field, field_serializer
@@ -214,19 +214,19 @@ def test_custom_type():
                 "glue_type": "timestamp",
             },
         )
-        optional_unixtime: Optional[int] = Field(
+        optional_unixtime: int | None = Field(
             ...,
             json_schema_extra={
                 "glue_type": "timestamp",
             },
         )
-        clobber_union_unixtime: Optional[Union[int, str]] = Field(
+        clobber_union_unixtime: Union[int, str] | None = Field(
             ...,
             json_schema_extra={
                 "glue_type": "timestamp",
             },
         )
-        correct_union_unixtime: Optional[Union[int, str]] = Field(
+        correct_union_unixtime: Union[int, str] | None = Field(
             ...,
             json_schema_extra={
                 "glue_type": "union<timestamp,string>",
@@ -282,7 +282,7 @@ def test_union_of_complex_types():
 
 def test_single_optional_column():
     class A(BaseModel):
-        name: Optional[str] = None
+        name: str | None = None
 
     expected = [("name", "string")]
     actual = json.dumps(A.model_json_schema())
