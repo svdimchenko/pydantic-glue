@@ -23,7 +23,7 @@ pydantic-glue = "pydantic_glue.cli:cli"
 
 [dependency-groups]
 dev = [
-	"pytest >=8.2.0,<9.0.0",
+	"pytest >=8.2.0,<10.0.0",
 	"cli-test-helpers >=4.1.0,<5.0.0",
 	"mypy >=1.10.0,<2.0.0",
 	"ruff >=0.9.4,<0.16.0",
